@@ -16,7 +16,7 @@ const requestListeners = {
 export const apis = {}
 
 function __parseResponse(apiOption, data) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     let resolveData = data
 
     if (typeof apiOption.parseResponse === 'function') {
@@ -67,17 +67,7 @@ function __request(apiOption, p) {
 }
 
 function __response(apiOption) {
-  return res => {
-    if (apiOption.useOriginResponseData) {
-      return __parseResponse(apiOption, res)
-    } else {
-      if (res && res.success) {
-        return __parseResponse(apiOption, res.body)
-      } else {
-        return Promise.reject(res)
-      }
-    }
-  }
+  return res => __parseResponse(apiOption, res)
 }
 
 function __handleEvent(eventName, ...args) {
