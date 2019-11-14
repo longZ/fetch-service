@@ -1,7 +1,7 @@
 {
-  "name": "fetch-service",
+  "name": "fetch-service-parser",
   "version": "0.0.1",
-  "description": "fetch-service",
+  "description": "fetch-service-parser",
   "main": "lib/index.js",
   "module": "es/index.js",
   "typings": "./index.d.ts",
@@ -16,7 +16,7 @@
     "build:es": "cross-env BABEL_ENV=es babel src --out-dir es",
     "build:umd": "cross-env BABEL_ENV=es NODE_ENV=development rollup -c -i src/index.js -o dist/index.js",
     "build:umd:min": "cross-env BABEL_ENV=es NODE_ENV=production rollup -c -i src/index.js -o dist/index.min.js",
-    "pub": "npm run build && npm publish",
+    "pub": "npm publish",
     "build": "npm run build:commonjs && npm run build:es && npm run build:umd && npm run build:umd:min"
   },
   "devDependencies": {

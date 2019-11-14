@@ -10,7 +10,7 @@ var config = {
   output: {
     file: './dist/index.js',
     format: 'umd',
-    name: 'fetchService'
+    name: 'fetchServiceParser'
   },
   plugins: [
     resolve({
