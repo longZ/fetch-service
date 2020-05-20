@@ -37,8 +37,7 @@
     "rollup-plugin-cleanup": "^3.1.1",
     "rollup-plugin-node-resolve": "^4.2.3",
     "rollup-plugin-replace": "^2.2.0",
-    "rollup-plugin-uglify": "^6.0.2",
-    "whatwg-fetch": "3.0.0"
+    "rollup-plugin-uglify": "^6.0.2"
   },
   "repository": {
     "type": "git",
@@ -49,5 +48,9 @@
   "bugs": {
     "url": "https://github.com/longZ/fetch-service/issues"
   },
-  "homepage": "https://github.com/longZ/fetch-service#readme"
+  "homepage": "https://github.com/longZ/fetch-service#readme",
+  "dependencies": {
+    "eventemitter3": "^4.0.4",
+    "whatwg-fetch": "3.0.0"
+  }
 }
