@@ -24,7 +24,7 @@ var config = {
     }),
     cleanup()
   ],
-  external: ['react', 'react-dom', 'prop-types'],
+  external: ['react', 'react-dom', 'prop-types', 'eventemitter3'],
 }
 if (env === 'production') {
   config.plugins.push(uglify())

@@ -1,4 +1,4 @@
-import * as EventEmitter from 'eventemitter3'
+import EventEmitter from 'eventemitter3'
 import {renderTemplate, timeoutPromise} from "./util";
 import {request} from "./request";
 import {EVENT_ERROR, EVENT_REQUESTED, EVENT_WILL_REQUEST} from "./constrants";
