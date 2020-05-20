@@ -12,9 +12,20 @@ class FetchService {
 
   constructor(op = {}) {
     this._globalParseResponse = op.parseResponse
+
     this._tokenFun = op.tokenFun
-    this._requestNeedToken = op.requestNeedToken
-    this._requestHeaderTokenName = op.tokenHeaderName
+
+    if (op.requestNeedToken) {
+      this._requestNeedToken = true
+    }
+
+    if (op.headers) {
+      this._globalHeader = op.headers
+    }
+
+    if (op.tokenHeaderName) {
+      this._requestHeaderTokenName = op.tokenHeaderName
+    }
   }
 
   __parseResponse(apiOption, data) {
@@ -22,7 +33,7 @@ class FetchService {
     let resolveData = data
 
     if (typeof this._globalParseResponse === 'function') {
-      resolveData = this._globalParseResponse(resolveData)
+      resolveData = this._globalParseResponse(resolveData, apiOption)
     }
 
     if (typeof apiOption.parseResponse === 'function') {
@@ -49,10 +60,12 @@ class FetchService {
       cache
     } = apiOption
 
-    let newHeaders = headers
+    let newHeaders = this._globalHeader || {}
 
     if (typeof headers === 'function') {
-      newHeaders = headers(param, apiOption)
+      Object.assign(newHeaders, headers(param, apiOption))
+    } else if (typeof headers === 'object') {
+      Object.assign(newHeaders, headers)
     }
 
     return p => ({
@@ -96,7 +109,7 @@ class FetchService {
 
   __ensureToken(apiOption, p) {
     return op => {
-      if (typeof this._tokenFun === 'function') {
+      if (this._requestNeedToken && typeof this._tokenFun === 'function') {
         return this._tokenFun(apiOption, p).then(token => {
           if (!op.headers) {
             op.headers = {}
@@ -114,7 +127,7 @@ class FetchService {
   parseOption(apiOption) {
     return p => {
       // 解析传参
-      return Promise.resolve(this.__parseParam(p, apiOption))
+      const promise =  Promise.resolve(this.__parseParam(p, apiOption))
 
       // 解析选项
       .then(this.__parseOption(apiOption, p))
@@ -129,10 +142,12 @@ class FetchService {
       .then(this.__response(apiOption))
 
       // 请求出错
-      .catch(this.__handleError(apiOption))
+      promise.catch(this.__handleError(apiOption))
 
       // 请求结束
       .finally(() => this._eventer.emit(EVENT_REQUESTED, apiOption))
+
+      return promise
     }
   }
 

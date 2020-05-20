@@ -161,14 +161,11 @@ export function setCookie(name, value, cookieExpiresTime = 24 * 60 * 60 * 30) {
 export function getCookie(name) {
   let arr
   const reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)")
-  const sessionKeyName = sessionStoragePrefix + name
   if (arr = document.cookie.match(reg)) {
-    const v = unescape(arr[2])
-    sessionStorage.setItem(sessionKeyName, v)
-    return v;
-  } else {
-    return sessionStorage.getItem(sessionKeyName) || "";
+    return unescape(arr[2])
   }
+
+  return null
 }
 
 export function deepClone(obj) {
