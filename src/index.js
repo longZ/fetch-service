@@ -11,10 +11,12 @@ import {
   EVENT_WILL_REQUEST,
   EVENT_REQUESTED
 } from './constrants'
+import StorageRequestEnsureToken from "./storageRequestEnsureToken";
 
 export {
   services,
   util,
+  StorageRequestEnsureToken,
   FetchService,
   CONTENT_TYPES,
   REQUEST_METHOD_GET,

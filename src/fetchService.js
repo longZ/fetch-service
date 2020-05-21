@@ -109,7 +109,9 @@ class FetchService {
 
   __ensureToken(apiOption, p) {
     return op => {
-      if (this._requestNeedToken && typeof this._tokenFun === 'function') {
+      if (this._requestNeedToken
+          && apiOption.requestNeedToken !== false
+          && typeof this._tokenFun === 'function') {
         return this._tokenFun(apiOption, p).then(token => {
           if (!op.headers) {
             op.headers = {}
@@ -158,9 +160,7 @@ class FetchService {
   }
 
   off(eventName, fun) {
-    if (typeof fun === 'function') {
-      this._eventer.off(eventName, fun)
-    }
+    this._eventer.off(eventName, fun)
   }
 }
 
