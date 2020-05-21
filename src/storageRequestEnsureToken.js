@@ -61,10 +61,10 @@ export default class StorageRequestEnsureToken {
     const time = Date.now() - timestamp
 
     if (time >= 0 && time <= this.TIME_OVER_TIME) {
-      return null
+      return token
     }
 
-    return token
+    return null
   }
 
   getToken(...args) {
