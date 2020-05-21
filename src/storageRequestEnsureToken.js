@@ -2,13 +2,12 @@ export default class StorageRequestEnsureToken {
   TOKEN_KEY = 'fetch-service-storage-token'
   TOKEN_KEY_TIMESTAMP = 'fetch-service-storage-token-timestamp'
   TIME_OVER_TIME = 1 * 60 * 60 * 1000
+  _initToking = false
+  _initTokenPromise = []
 
   _customGetToken = function() {
     return Promise.resolve()
   }
-
-  _initTokening = false
-  _initTokenPromise = []
 
   constructor(op = {}) {
     if (!op.customGetToken) {
@@ -30,20 +29,7 @@ export default class StorageRequestEnsureToken {
     this._customGetToken = op.customGetToken
   }
 
-  validTokenTimeout(token, timestamp) {
-    if (!token) return false
-    if (!timestamp) return false
-
-    const time = Date.now() - timestamp
-
-    if (time >= 0 && time <= this.TIME_OVER_TIME) {
-      return true
-    }
-
-    return false
-  }
-
-  setToken(token) {
+  __setToken(token) {
     if (token) {
       localStorage.setItem(this.TOKEN_KEY, token)
       localStorage.setItem(this.TOKEN_KEY_TIMESTAMP, `${Date.now()}`)
@@ -52,7 +38,7 @@ export default class StorageRequestEnsureToken {
     return token
   }
 
-  invokeTokeingPromise(err, info) {
+  __invokeTokingPromise(err, info) {
     for(let p of this._initTokenPromise) {
       if (err) {
         p.reject(err)
@@ -62,30 +48,46 @@ export default class StorageRequestEnsureToken {
     }
 
     this._initTokenPromise = []
-    this._initTokening = false
+    this._initToking = false
+  }
+
+  getStorageToken() {
+    const token = localStorage.getItem(this.TOKEN_KEY)
+    const timestamp = localStorage.getItem(this.TOKEN_KEY_TIMESTAMP)
+
+    if (!token) return null
+    if (!timestamp) return null
+
+    const time = Date.now() - timestamp
+
+    if (time >= 0 && time <= this.TIME_OVER_TIME) {
+      return null
+    }
+
+    return token
   }
 
   getToken(...args) {
-    const token = localStorage.getItem(this.TOKEN_KEY)
-    const tokenTimestamp = localStorage.getItem(this.TOKEN_KEY_TIMESTAMP)
+    const token = this.getStorageToken()
 
     return new Promise((resolve, reject) => {
-      if (this.validTokenTimeout(token, tokenTimestamp)) {
+      if (token) {
         resolve(token)
       } else {
-        if (this._initTokening) {
+        if (this._initToking) {
           this._initTokenPromise.push({resolve, reject})
           return
         }
-        this._initTokening = true
+
+        this._initToking = true
 
         this._customGetToken(...args).then(newToken => {
-          this.setToken(newToken)
+          this.__setToken(newToken)
           resolve(newToken)
-          this.invokeTokeingPromise(null, newToken)
+          this.__invokeTokingPromise(null, newToken)
         }).catch(err => {
           reject(err)
-          this.invokeTokeingPromise(err)
+          this.__invokeTokingPromise(err)
         })
       }
     })

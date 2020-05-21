@@ -105,6 +105,19 @@ declare class FetchService {
 
 declare class StorageRequestEnsureToken {
   constructor(option?: StorageRequestEnsureTokenOption)
+
+  /**
+   * 获取本地存储的token
+   * @returns {string} token
+   */
+  getStorageToken(): string
+
+  /**
+   * 获取有效的token
+   * @param args
+   * @returns {PromiseFun}
+   */
+  getToken(...args: Array<any>): PromiseFun
 }
 
 export interface util {
