@@ -2,6 +2,7 @@ import EventEmitter from 'eventemitter3'
 import {renderTemplate, timeoutPromise} from "./util";
 import {request} from "./request";
 import {EVENT_ERROR, EVENT_REQUESTED, EVENT_WILL_REQUEST} from "./constrants";
+const Promise = require('es6-promise').Promise;
 
 class FetchService {
   _eventer = new EventEmitter()
