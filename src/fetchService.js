@@ -1,5 +1,5 @@
 import EventEmitter from 'eventemitter3'
-import {renderTemplate, timeoutPromise} from "./util";
+import {deepClone, renderTemplate, timeoutPromise} from "./util";
 import {request} from "./request";
 import {EVENT_ERROR, EVENT_REQUESTED, EVENT_WILL_REQUEST} from "./constrants";
 const Promise = require('es6-promise').Promise;
@@ -61,7 +61,7 @@ class FetchService {
       cache
     } = apiOption
 
-    let newHeaders = this._globalHeader || {}
+    let newHeaders = deepClone(Object.assign({}, this._globalHeader))
 
     if (typeof headers === 'function') {
       Object.assign(newHeaders, headers(param, apiOption))
