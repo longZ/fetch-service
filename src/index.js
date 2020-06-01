@@ -9,6 +9,7 @@ import {
   REQUEST_METHOD_DELETE,
   EVENT_ERROR,
   EVENT_WILL_REQUEST,
+  EVENT_PARSE_OPTION,
   EVENT_REQUESTED
 } from './constrants'
 import StorageRequestEnsureToken from "./storageRequestEnsureToken";
@@ -25,5 +26,6 @@ export {
   REQUEST_METHOD_DELETE,
   EVENT_ERROR,
   EVENT_WILL_REQUEST,
+  EVENT_PARSE_OPTION,
   EVENT_REQUESTED
 }

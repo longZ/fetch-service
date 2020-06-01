@@ -113,6 +113,11 @@ declare class StorageRequestEnsureToken {
   getStorageToken(): string
 
   /**
+   * 清除存储的token
+   */
+  clearToken(): void
+
+  /**
    * 获取有效的token
    * @param args
    * @returns {PromiseFun}
@@ -121,6 +126,11 @@ declare class StorageRequestEnsureToken {
 }
 
 export interface util {
+  /**
+   * 参数是否为函数
+   */
+  isFunction(fun: any): boolean
+
   /**
    * base64字符串转换成Blob对象，一般用于上传文件
    * @param {string} dataURI base64字符串

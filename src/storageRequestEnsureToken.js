@@ -3,6 +3,7 @@ export default class StorageRequestEnsureToken {
   TOKEN_KEY_TIMESTAMP = 'fetch-service-storage-token-timestamp'
   TIME_OVER_TIME = 1 * 60 * 60 * 1000
   _initToking = false
+  _userSessionStorage = false
   _initTokenPromise = []
 
   _customGetToken = function() {
@@ -26,16 +27,49 @@ export default class StorageRequestEnsureToken {
       this.TIME_OVER_TIME = op.timeout
     }
 
+    if (op.session) {
+      this._userSessionStorage = true
+    }
+
     this._customGetToken = op.customGetToken
+  }
+
+  setStorage(key, value) {
+    if (this._userSessionStorage) {
+      sessionStorage.setItem(key ,value)
+    } else {
+      localStorage.setItem(key ,value)
+    }
+  }
+
+  getStorage(key) {
+    if (this._userSessionStorage) {
+      sessionStorage.getItem(key)
+    } else {
+      localStorage.getItem(key)
+    }
+  }
+
+  removeStorage(key) {
+    if (this._userSessionStorage) {
+      sessionStorage.removeStorage(key)
+    } else {
+      localStorage.removeStorage(key)
+    }
   }
 
   __setToken(token) {
     if (token) {
-      localStorage.setItem(this.TOKEN_KEY, token)
-      localStorage.setItem(this.TOKEN_KEY_TIMESTAMP, `${Date.now()}`)
+      this.setStorage(this.TOKEN_KEY, token)
+      this.setStorage(this.TOKEN_KEY_TIMESTAMP, `${Date.now()}`)
     }
 
     return token
+  }
+
+  clearToken() {
+    this.removeStorage(this.TOKEN_KEY)
+    this.removeStorage(this.TOKEN_KEY_TIMESTAMP)
   }
 
   __invokeTokingPromise(err, info) {
@@ -52,8 +86,8 @@ export default class StorageRequestEnsureToken {
   }
 
   getStorageToken() {
-    const token = localStorage.getItem(this.TOKEN_KEY)
-    const timestamp = localStorage.getItem(this.TOKEN_KEY_TIMESTAMP)
+    const token = this.getStorage(this.TOKEN_KEY)
+    const timestamp = this.getStorage(this.TOKEN_KEY_TIMESTAMP)
 
     if (!token) return null
     if (!timestamp) return null
