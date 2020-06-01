@@ -15,4 +15,5 @@ export const CONTENT_TYPES = {
 
 export const EVENT_ERROR = 'error'
 export const EVENT_WILL_REQUEST = 'willRequest'
+export const EVENT_PARSE_OPTION = 'parseOption'
 export const EVENT_REQUESTED = 'requested'

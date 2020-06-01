@@ -1,7 +1,10 @@
 import EventEmitter from 'eventemitter3'
-import {deepClone, renderTemplate, timeoutPromise} from "./util";
+import {deepClone, isFunction, renderTemplate, timeoutPromise} from "./util";
 import {request} from "./request";
-import {EVENT_ERROR, EVENT_REQUESTED, EVENT_WILL_REQUEST} from "./constrants";
+import {
+  EVENT_ERROR, EVENT_PARSE_OPTION, EVENT_REQUESTED,
+  EVENT_WILL_REQUEST
+} from "./constrants";
 const Promise = require('es6-promise').Promise;
 
 class FetchService {
@@ -33,11 +36,11 @@ class FetchService {
 
     let resolveData = data
 
-    if (typeof this._globalParseResponse === 'function') {
+    if (isFunction(this._globalParseResponse)) {
       resolveData = this._globalParseResponse(resolveData, apiOption)
     }
 
-    if (typeof apiOption.parseResponse === 'function') {
+    if (isFunction(apiOption.parseResponse)) {
       resolveData = apiOption.parseResponse(resolveData)
     }
 
@@ -45,7 +48,7 @@ class FetchService {
   }
 
   __parseParam(p, apiOption) {
-    if (typeof apiOption.parseParam === 'function') {
+    if (isFunction(apiOption.parseParam)) {
       return apiOption.parseParam(p)
     }
 
@@ -63,33 +66,37 @@ class FetchService {
 
     let newHeaders = deepClone(Object.assign({}, this._globalHeader))
 
-    if (typeof headers === 'function') {
+    if (isFunction(headers)) {
       Object.assign(newHeaders, headers(param, apiOption))
     } else if (typeof headers === 'object') {
       Object.assign(newHeaders, headers)
     }
 
-    return p => ({
-      body: p,
-      headers: newHeaders,
-      method,
-      mode,
-      credentials,
-      cache
-    })
+    return p => {
+      this._eventer.emit(EVENT_PARSE_OPTION, apiOption, p, newHeaders)
+
+      return {
+        body: p,
+        headers: newHeaders,
+        method,
+        mode,
+        credentials,
+        cache
+      }
+    }
   }
 
   __request(apiOption, p) {
     return op => {
-      const url = renderTemplate(apiOption.url, p)
-
       this._eventer.emit(EVENT_WILL_REQUEST, apiOption, op, p)
+
+      const url = renderTemplate(apiOption.url, p)
 
       if (apiOption.debug && apiOption.mock) {
         // debug模式下， 使用mock数据模拟数据
         let resolveData = apiOption.mock
 
-        if (typeof resolveData === 'function') {
+        if (isFunction(resolveData)) {
           resolveData = resolveData(p)
         }
 
@@ -112,7 +119,7 @@ class FetchService {
     return op => {
       if (this._requestNeedToken
           && apiOption.requestNeedToken !== false
-          && typeof this._tokenFun === 'function') {
+          && isFunction(this._tokenFun)) {
         return this._tokenFun(apiOption, p).then(token => {
           if (!op.headers) {
             op.headers = {}
@@ -155,7 +162,7 @@ class FetchService {
   }
 
   on(eventName, fun) {
-    if (typeof fun === 'function') {
+    if (isFunction(fun)) {
       this._eventer.on(eventName, fun)
     }
   }

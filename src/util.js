@@ -129,7 +129,7 @@ export function isUnValid(value) {
 
 // 定时任务返回Promise
 export function timeoutPromise (fun, timeout = 1000) {
-  if (typeof fun !== 'fucntion') {
+  if (!isFunction(fun)) {
     return Promise.resolve()
   }
 
@@ -151,6 +151,11 @@ export function parseJson (text) {
   } catch {
     return text
   }
+}
+
+// 解析成json
+export function isFunction (fun) {
+  return typeof fun === 'function'
 }
 
 /**
@@ -231,7 +236,7 @@ export function promiseAll (arr, operate) {
     let a = arr.shift()
     if (a) {
       let promise = a
-      if (typeof operate === 'function') {
+      if (isFunction(operate)) {
         promise = operate(a)
       }
       promise.then(r => {
