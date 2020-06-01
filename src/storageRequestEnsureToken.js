@@ -52,9 +52,9 @@ export default class StorageRequestEnsureToken {
 
   removeStorage(key) {
     if (this._userSessionStorage) {
-      sessionStorage.removeStorage(key)
+      sessionStorage.removeItem(key)
     } else {
-      localStorage.removeStorage(key)
+      localStorage.removeItem(key)
     }
   }
 
