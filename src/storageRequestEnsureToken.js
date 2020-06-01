@@ -44,9 +44,9 @@ export default class StorageRequestEnsureToken {
 
   getStorage(key) {
     if (this._userSessionStorage) {
-      sessionStorage.getItem(key)
+      return sessionStorage.getItem(key)
     } else {
-      localStorage.getItem(key)
+      return localStorage.getItem(key)
     }
   }
 
