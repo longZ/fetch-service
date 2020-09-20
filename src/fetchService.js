@@ -60,8 +60,7 @@ class FetchService {
       headers,
       method,
       mode,
-      credentials,
-      cache
+      credentials
     } = apiOption
 
     let newHeaders = deepClone(Object.assign({}, this._globalHeader))
@@ -80,8 +79,7 @@ class FetchService {
         headers: newHeaders,
         method,
         mode,
-        credentials,
-        cache
+        credentials
       }
     }
   }
@@ -103,7 +101,7 @@ class FetchService {
         return timeoutPromise(() => resolveData, 1000)
       }
 
-      return request(url, op, apiOption.useQueue)
+      return request(url, op, apiOption.useQueue, apiOption.cache)
     }
   }
 

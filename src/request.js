@@ -76,9 +76,9 @@ function dealStatus (response) {
 }
 
 // 缓存结果
-function cacheResponse (url, option) {
+function cacheResponse (url, useCache) {
   return json => {
-    if (option.cache) {
+    if (useCache) {
       _requestCache[url] = json
     }
     return json
@@ -88,10 +88,10 @@ function cacheResponse (url, option) {
 const _fetchQueue = []
 let _fetchQueueStarting = false
 
-function _addFetchQueue(url, option) {
+function _addFetchQueue(url, option, useCache) {
   return new Promise((resolve, reject) => {
     _fetchQueue.push({
-      url, option, successFun: resolve, failFun: reject
+      url, option, successFun: resolve, failFun: reject, useCache
     })
     _startQueue()
   })
@@ -104,8 +104,8 @@ function _startQueue() {
 
   _fetchQueueStarting = true
 
-  promiseAll(_fetchQueue, ({url, option, successFun, failFun}) => {
-    if (option.cache && _requestCache[url]) {
+  promiseAll(_fetchQueue, ({url, option, successFun, failFun, useCache}) => {
+    if (useCache && _requestCache[url]) {
       return Promise.resolve(_requestCache[url])
     }
 
@@ -124,18 +124,18 @@ let _requestCache = {}
  * @param useQueue 是否使用请求队列
  * @returns {PromiseLike<T> | Promise<T>}
  */
-export function request (url, options, useQueue = false) {
+export function request (url, options, useQueue = false, useCache = false) {
   const lastOption = mergeOption(options)
   const lastUrl = dealUrl(url, lastOption)
 
   if (useQueue) {
-    return _addFetchQueue(lastUrl, lastOption).then(dealStatus).then(cacheResponse(lastUrl, lastOption))
+    return _addFetchQueue(lastUrl, lastOption, useCache).then(dealStatus).then(cacheResponse(lastUrl, useCache))
   }else {
-    if (lastOption.cache && _requestCache[lastUrl]) {
+    if (useCache && _requestCache[lastUrl]) {
       return Promise.resolve(_requestCache[lastUrl])
     }
 
-    return fetch(lastUrl, lastOption).then(dealStatus).then(cacheResponse(lastUrl, lastOption))
+    return fetch(lastUrl, lastOption).then(dealStatus).then(cacheResponse(lastUrl, useCache))
   }
 }
 
