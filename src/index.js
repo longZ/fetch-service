@@ -13,9 +13,12 @@ import {
   EVENT_REQUESTED
 } from './constrants'
 import StorageRequestEnsureToken from "./storageRequestEnsureToken";
+import {request, clearRequestCache} from "./request";
 
 export {
   services,
+  request,
+  clearRequestCache,
   util,
   StorageRequestEnsureToken,
   FetchService,

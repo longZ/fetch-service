@@ -75,6 +75,16 @@ function dealStatus (response) {
   }
 }
 
+// 缓存结果
+function cacheResponse (url, option) {
+  return json => {
+    if (option.cache) {
+      _requestCache[url] = json
+    }
+    return json
+  }
+}
+
 const _fetchQueue = []
 let _fetchQueueStarting = false
 
@@ -95,11 +105,18 @@ function _startQueue() {
   _fetchQueueStarting = true
 
   promiseAll(_fetchQueue, ({url, option, successFun, failFun}) => {
+    if (option.cache && _requestCache[url]) {
+      return Promise.resolve(_requestCache[url])
+    }
+
     return fetch(url, option).then(successFun).catch(failFun)
   }).finally(() => {
     _fetchQueueStarting = false
   })
 }
+
+let _requestCache = {}
+
 /**
  * 请求接口
  * @param url 请求地址
@@ -112,8 +129,16 @@ export function request (url, options, useQueue = false) {
   const lastUrl = dealUrl(url, lastOption)
 
   if (useQueue) {
-    return _addFetchQueue(lastUrl, lastOption).then(dealStatus)
+    return _addFetchQueue(lastUrl, lastOption).then(dealStatus).then(cacheResponse(lastUrl, lastOption))
   }else {
-    return fetch(lastUrl, lastOption).then(dealStatus)
+    if (lastOption.cache && _requestCache[lastUrl]) {
+      return Promise.resolve(_requestCache[lastUrl])
+    }
+
+    return fetch(lastUrl, lastOption).then(dealStatus).then(cacheResponse(lastUrl, lastOption))
   }
+}
+
+export function clearRequestCache () {
+  _requestCache = {}
 }
