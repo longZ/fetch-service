@@ -59,8 +59,8 @@ class FetchService {
     const {
       headers,
       method,
-      mode,
-      credentials
+      mode = 'cors',
+      credentials = 'include'
     } = apiOption
 
     let newHeaders = deepClone(Object.assign({}, this._globalHeader))
