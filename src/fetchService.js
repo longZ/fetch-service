@@ -27,6 +27,14 @@ class FetchService {
       this._globalHeader = op.headers
     }
 
+    if (op.mode) {
+      this._mode = op.mode
+    }
+
+    if (op.credentials) {
+      this._credentials = op.credentials
+    }
+
     if (op.tokenHeaderName) {
       this._requestHeaderTokenName = op.tokenHeaderName
     }
@@ -59,8 +67,8 @@ class FetchService {
     const {
       headers,
       method,
-      mode = 'cors',
-      credentials = 'include'
+      mode = this._mode,
+      credentials = this._credentials
     } = apiOption
 
     let newHeaders = deepClone(Object.assign({}, this._globalHeader))
@@ -74,13 +82,21 @@ class FetchService {
     return p => {
       this._eventer.emit(EVENT_PARSE_OPTION, apiOption, p, newHeaders)
 
-      return {
+      const ret = {
         body: p,
         headers: newHeaders,
-        method,
-        mode,
-        credentials
+        method
       }
+      
+      if (mode) {
+        ret.mode = mode
+      }
+      
+      if (credentials) {
+        ret.credentials = credentials
+      }
+      
+      return ret
     }
   }
 

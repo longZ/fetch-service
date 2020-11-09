@@ -18,12 +18,12 @@ function mergeOption (options) {
   const defaultOption = {
     headers: {
       'Content-Type': CONTENT_TYPES.JSON,
-      'X-Requested-With': 'XMLHttpRequest',
+      // 'X-Requested-With': 'XMLHttpRequest',
       ...headers
     },
     method: REQUEST_METHOD_GET,
-    mode: 'cors',
-    credentials: 'include',
+    // mode: 'cors',
+    // credentials: 'include',
     ...otherOptions
   }
 
