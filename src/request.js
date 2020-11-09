@@ -17,7 +17,7 @@ function mergeOption (options) {
   // 默认选项
   const defaultOption = {
     headers: {
-      'Content-Type': CONTENT_TYPES.JSON,
+      // 'Content-Type': CONTENT_TYPES.JSON,
       // 'X-Requested-With': 'XMLHttpRequest',
       ...headers
     },
