@@ -28,6 +28,11 @@ function mergeOption (options) {
   }
 
   const { body, method = REQUEST_METHOD_GET } = defaultOption
+  
+  if(typeof defaultOption.method !== 'string'
+    || !ALL_METHODS.includes(defaultOption.method.toLowerCase())) {
+    defaultOption.method = REQUEST_METHOD_GET
+  }
 
   if (window && window.FormData && body instanceof window.FormData) {
     delete defaultOption.headers['Content-Type']

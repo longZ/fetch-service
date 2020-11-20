@@ -3,7 +3,7 @@ import {deepClone, isFunction, renderTemplate, timeoutPromise} from "./util";
 import {request} from "./request";
 import {
   EVENT_ERROR, EVENT_PARSE_OPTION, EVENT_REQUESTED,
-  EVENT_WILL_REQUEST
+  EVENT_WILL_REQUEST, REQUEST_METHOD_GET
 } from "./constrants";
 const Promise = require('es6-promise').Promise;
 
@@ -66,7 +66,7 @@ class FetchService {
   __parseOption(apiOption, param) {
     const {
       headers,
-      method,
+      method = REQUEST_METHOD_GET,
       mode = this._mode,
       credentials = this._credentials
     } = apiOption

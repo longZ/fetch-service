@@ -3,6 +3,8 @@ export const REQUEST_METHOD_POST = 'POST'
 export const REQUEST_METHOD_OPTIONS = 'OPTIONS'
 export const REQUEST_METHOD_DELETE = 'DELETE'
 
+export const ALL_METHODS = ['get', 'post', 'delete', 'options', 'head', 'put', 'connect', 'trace', 'patch', 'move', 'copy', 'link', 'unlink', 'wrapped']
+
 export const CONTENT_TYPES = {
   JSON: 'application/json; charset=UTF-8',
   FORM_URL: 'application/x-www-form-urlencoded',
