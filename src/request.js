@@ -2,7 +2,8 @@ import fetch from './fetch'
 import {
   REQUEST_METHOD_GET,
   REQUEST_METHOD_DELETE,
-  CONTENT_TYPES
+  CONTENT_TYPES,
+  ALL_METHODS
 } from './constrants'
 import {parseJson, json2param, promiseAll} from "./util";
 
