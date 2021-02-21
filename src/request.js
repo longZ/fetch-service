@@ -1,4 +1,5 @@
 import fetch from './fetch'
+import CryptoJS from "crypto-js";
 import {
   REQUEST_METHOD_GET,
   REQUEST_METHOD_DELETE,
@@ -82,10 +83,10 @@ function dealStatus (response) {
 }
 
 // 缓存结果
-function cacheResponse (url, useCache) {
+function cacheResponse (md5, useCache) {
   return json => {
     if (useCache) {
-      _requestCache[url] = json
+      _requestCache[md5] = json
     }
     return json
   }
@@ -133,15 +134,17 @@ let _requestCache = {}
 export function request (url, options, useQueue = false, useCache = false) {
   const lastOption = mergeOption(options)
   const lastUrl = dealUrl(url, lastOption)
+  const sha256Str = `${lastUrl}_${lastOption && lastOption.body && JSON.stringify(lastOption.body) || ''}`
+  const cacheSha256 = CryptoJS.SHA256(sha256Str).toString(CryptoJS.enc.Base64)
 
   if (useQueue) {
-    return _addFetchQueue(lastUrl, lastOption, useCache).then(dealStatus).then(cacheResponse(lastUrl, useCache))
+    return _addFetchQueue(lastUrl, lastOption, useCache).then(dealStatus).then(cacheResponse(cacheSha256, useCache))
   }else {
-    if (useCache && _requestCache[lastUrl]) {
-      return Promise.resolve(_requestCache[lastUrl])
+    if (useCache && _requestCache[cacheSha256]) {
+      return Promise.resolve(_requestCache[cacheSha256])
     }
 
-    return fetch(lastUrl, lastOption).then(dealStatus).then(cacheResponse(lastUrl, useCache))
+    return fetch(lastUrl, lastOption).then(dealStatus).then(cacheResponse(cacheSha256, useCache))
   }
 }
 
