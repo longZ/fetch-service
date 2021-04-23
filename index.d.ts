@@ -59,8 +59,9 @@ interface apiOption {
   requestNeedToken?: boolean
 }
 
-type PromiseFun = (p: any) => Promise
-type AnyFunction = (...args: Array<any>) => any
+type PromiseFun = (p: any) => Promise<any>
+type AnyFunction = (...args: any) => any
+type HeaderFunction = (params: any, option: apiOption) => apiOption
 
 interface StorageRequestEnsureTokenOption {
   // 自定义的获取token的函数
@@ -86,8 +87,14 @@ interface FetchServiceOption {
   // 请求是否需要token
   requestNeedToken?: boolean
 
+  // mode
+  mode?: 'cors' | 'no-cors' | 'same-origin'
+
+  // mode
+  credentials?: 'same-origin' | 'include' | 'omit'
+
   // 全局设置headers
-  headers?: object
+  headers?: object | HeaderFunction
 
   // token设置的对应header名称
   tokenHeaderName?: string

@@ -65,19 +65,24 @@ class FetchService {
 
   __parseOption(apiOption, param) {
     const {
-      headers,
+      headers = {},
       method = REQUEST_METHOD_GET,
       mode = this._mode,
       credentials = this._credentials
     } = apiOption
 
-    let newHeaders = deepClone(Object.assign({}, this._globalHeader))
+    let _globalHeaders = this._globalHeader
+    let _localHeaders = headers
+
+    if (isFunction(this._globalHeader)) {
+      _globalHeaders = this._globalHeader(apiOption, param)
+    }
 
     if (isFunction(headers)) {
-      Object.assign(newHeaders, headers(param, apiOption))
-    } else if (typeof headers === 'object') {
-      Object.assign(newHeaders, headers)
+      _localHeaders = headers(apiOption, param)
     }
+
+    let newHeaders = deepClone(Object.assign({}, _globalHeaders, _localHeaders))
 
     return p => {
       this._eventer.emit(EVENT_PARSE_OPTION, apiOption, p, newHeaders)
