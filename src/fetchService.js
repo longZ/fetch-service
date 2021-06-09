@@ -75,11 +75,11 @@ class FetchService {
     let _localHeaders = headers
 
     if (isFunction(this._globalHeader)) {
-      _globalHeaders = this._globalHeader(apiOption, param)
+      _globalHeaders = this._globalHeader(param, apiOption)
     }
 
     if (isFunction(headers)) {
-      _localHeaders = headers(apiOption, param)
+      _localHeaders = headers(param, apiOption)
     }
 
     let newHeaders = deepClone(Object.assign({}, _globalHeaders, _localHeaders))
@@ -122,7 +122,7 @@ class FetchService {
         return timeoutPromise(() => resolveData, 1000)
       }
 
-      return request(url, op, apiOption.useQueue, apiOption.cache)
+      return request(url, op, apiOption.useQueue, apiOption.cache, apiOption.useOriginResponse)
     }
   }
 

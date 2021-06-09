@@ -16,6 +16,16 @@ interface apiOption {
   mock?: any
 
   /**
+   * 是否返回原始response
+   */
+  useOriginResponse?: boolean
+
+  /**
+   * 是否缓存结果
+   */
+  cache?: boolean
+
+  /**
    * 启动debug
    */
   debug?: boolean
@@ -33,7 +43,7 @@ interface apiOption {
   /**
    * 设置自定义header
    */
-  headers?: any,
+  headers?: object | HeaderFunction,
 
   /**
    * 是否不触发错误事件
