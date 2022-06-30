@@ -1,6 +1,6 @@
 {
-  "name": "@jd/fetch-service-parser",
-  "version": "0.1.0",
+  "name": "fetch-service-parser",
+  "version": "0.2.11",
   "description": "fetch-service-parser",
   "main": "lib/index.js",
   "module": "es/index.js",
