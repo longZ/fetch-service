@@ -120,6 +120,12 @@ declare class FetchService {
   off(eventName: string, fun: AnyFunction): void
 }
 
+declare class RequestNeedTokenQueue {
+  constructor(ensureAuthFn, errorCatchFn)
+
+  ensure(...args): Promise<void>
+}
+
 declare class StorageRequestEnsureToken {
   constructor(option?: StorageRequestEnsureTokenOption)
 
@@ -223,7 +229,7 @@ export interface util {
    * @param {number} timeout 定时触发事件，默认 1000
    * @returns {Promise<any>}
    */
-  timeoutPromise (fun: AnyFunction, timeout?: number): Promise<any>
+  timeoutPromise(fun: AnyFunction, timeout?: number): Promise<any>
 
   /**
    * 字符串解析成json对象
@@ -245,7 +251,7 @@ export interface util {
    * @param {string} str
    * @returns {object}
    */
-  param2json (str: string): object
+  param2json(str: string): object
 
   /**
    * 简易模板解析函数 替换{{}} 包裹的key
@@ -253,7 +259,7 @@ export interface util {
    * @param context 解析的数据
    * @returns {string}
    */
-  renderTemplate (template, context): string
+  renderTemplate(template, context): string
 
 
   /**
@@ -262,7 +268,7 @@ export interface util {
    * @param {Function} operate 要执行的操作，返回Promise对象
    * @returns {Promise<Array>}
    */
-  promiseAll (arr: Array, operate: AnyFunction): Promise<Array>
+  promiseAll(arr: Array, operate: AnyFunction): Promise<Array>
 }
 
 export interface services {
