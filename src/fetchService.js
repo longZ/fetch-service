@@ -1,6 +1,6 @@
 import EventEmitter from 'eventemitter3'
-import {deepClone, isFunction, renderTemplate, timeoutPromise} from "./util";
-import {request} from "./request";
+import { deepClone, isFunction, renderTemplate, timeoutPromise } from "./util";
+import { request } from "./request";
 import {
   EVENT_ERROR, EVENT_PARSE_OPTION, EVENT_REQUESTED,
   EVENT_WILL_REQUEST, REQUEST_METHOD_GET
@@ -13,11 +13,16 @@ class FetchService {
   _tokenFun = null
   _requestNeedToken = false
   _requestHeaderTokenName = 'fetch-service-auth-token'
+  _customParseResponse
 
   constructor(op = {}) {
     this._globalParseResponse = op.parseResponse
 
     this._tokenFun = op.tokenFun
+
+    if (op.customParseResponse) {
+      this._customParseResponse = op.customParseResponse
+    }
 
     if (op.requestNeedToken) {
       this._requestNeedToken = true
@@ -92,15 +97,15 @@ class FetchService {
         headers: newHeaders,
         method
       }
-      
+
       if (mode) {
         ret.mode = mode
       }
-      
+
       if (credentials) {
         ret.credentials = credentials
       }
-      
+
       return ret
     }
   }
@@ -122,7 +127,15 @@ class FetchService {
         return timeoutPromise(() => resolveData, 1000)
       }
 
-      return request(url, op, apiOption.useQueue, apiOption.cache, apiOption.useOriginResponse)
+      const useOriginResponse = apiOption || !!this._customParseResponse
+
+      return request(url, op, apiOption.useQueue, apiOption.cache, useOriginResponse).then(res => {
+        if (this._customParseResponse) {
+          return this._customParseResponse(res)
+        }
+
+        return res
+      })
     }
   }
 
@@ -137,8 +150,8 @@ class FetchService {
   __ensureToken(apiOption, p) {
     return op => {
       if (this._requestNeedToken
-          && apiOption.requestNeedToken !== false
-          && isFunction(this._tokenFun)) {
+        && apiOption.requestNeedToken !== false
+        && isFunction(this._tokenFun)) {
         return this._tokenFun(apiOption, p).then(token => {
           if (!op.headers) {
             op.headers = {}
@@ -156,25 +169,25 @@ class FetchService {
   parseOption(apiOption) {
     return p => {
       // 解析传参
-      const promise =  Promise.resolve(this.__parseParam(p, apiOption))
+      const promise = Promise.resolve(this.__parseParam(p, apiOption))
 
-      // 解析选项
-      .then(this.__parseOption(apiOption, p))
+        // 解析选项
+        .then(this.__parseOption(apiOption, p))
 
-      // 开始发送请求
-      .then(this.__ensureToken(apiOption, p))
+        // 开始发送请求
+        .then(this.__ensureToken(apiOption, p))
 
-      // 开始发送请求
-      .then(this.__request(apiOption, p))
+        // 开始发送请求
+        .then(this.__request(apiOption, p))
 
-      // 响应请求
-      .then(this.__response(apiOption))
+        // 响应请求
+        .then(this.__response(apiOption))
 
       // 请求出错
       promise.catch(this.__handleError(apiOption))
 
-      // 请求结束
-      .finally(() => this._eventer.emit(EVENT_REQUESTED, apiOption))
+        // 请求结束
+        .finally(() => this._eventer.emit(EVENT_REQUESTED, apiOption))
 
       return promise
     }

@@ -74,12 +74,12 @@ function dealUrl(url, options) {
 // 处理成功状态
 function dealStatus(useOriginResponse) {
   return (response) => {
+
+    if (useOriginResponse) {
+      return Promise.resolve(response)
+    }
+
     if (response.status === 200) {
-
-      if (useOriginResponse) {
-        return Promise.resolve(response)
-      }
-
       return response.text().then(txt => {
         return parseJson(txt)
       })
