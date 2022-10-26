@@ -127,7 +127,7 @@ class FetchService {
         return timeoutPromise(() => resolveData, 1000)
       }
 
-      const useOriginResponse = apiOption || !!this._customParseResponse
+      const useOriginResponse = apiOption.useOriginResponse || !!this._customParseResponse
 
       return request(url, op, apiOption.useQueue, apiOption.cache, useOriginResponse).then(res => {
         if (this._customParseResponse) {
