@@ -131,7 +131,7 @@ class FetchService {
 
       return request(url, op, apiOption.useQueue, apiOption.cache, useOriginResponse).then(res => {
         if (this._customParseResponse) {
-          return this._customParseResponse(res)
+          return this._customParseResponse(res, url, op, apiOption)
         }
 
         return res

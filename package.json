@@ -1,6 +1,6 @@
 {
   "name": "fetch-service-parser",
-  "version": "0.2.14",
+  "version": "0.2.15",
   "description": "fetch-service-parser",
   "main": "lib/index.js",
   "module": "es/index.js",

@@ -110,7 +110,7 @@ interface FetchServiceOption {
   tokenHeaderName?: string
 
   // 自定义处理response 的函数
-  customParseResponse?: Promise<any>
+  customParseResponse?: (res: any, url: any, op: any, apiOption: any) => Promise<any>
 }
 
 declare class FetchService {
